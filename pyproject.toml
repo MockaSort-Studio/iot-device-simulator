@@ -1,13 +1,18 @@
 [project]
-name = "bore-depth"
-version = "0.0.1"
+authors = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
+maintainers = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
+name = "iot-device-simulator"
+version = "1.0.0"
 requires-python = ">=3.12"
 dependencies = [
-    "paho-mqtt==1.6.1",
-    "schedule==1.1.0",
-    "json-schema-codegen==0.6.1",
+    "paho-mqtt>=1.6.1",
+    "schedule>=1.1.0",
     "orjson>=3.11.5",
+    "pydantic>=2.12.5",
 ]
+
+[project.scripts]
+iotsim = "iotsim:main"
 
 [dependency-groups]
 dev = ["ruff>=0.14.13"]

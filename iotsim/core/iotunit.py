@@ -1,14 +1,11 @@
 #!/usr/bin/env python
-from argparse import Namespace
-import paho.mqtt.client as mqtt
 import importlib
-import ssl
-import threading
 import logging
+import threading
 
-from datapublisher import DataPublisher
-from datasubscriber import DataSubscriber
-import typedefines as types
+import iotsim.core.typedefines as types
+from iotsim.core.datapublisher import DataPublisher
+from iotsim.core.datasubscriber import DataSubscriber
 
 
 class IOTUnit:

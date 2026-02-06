@@ -8,12 +8,12 @@
         "type": "mqtt",
         "host": "localhost",
         "port": 1883,
-        "root_ca": "",
-        "client_certificate": "",
-        "client_key": ""
+        "root_ca_path": "",
+        "client_certificate_path": "",
+        "client_key_path": ""
     },
-    "pods": {
-        "pods_list_file_path": "/workspace/examples/iotunits.json",
+    "units": {
+        "units_list_file_path": "/workspace/examples/iotunits.json",
         "pods_py_module_path": "/workspace/examples/"
     }
 }

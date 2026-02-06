@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-import iotcontainer as iot
-import signal
-import time
 import argparse
 import os
+import time
+
+import iotsim.core.iotcontainer as iot
 
 
-def parse_arguments():
+def parse_arguments() -> str:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-c",
@@ -25,7 +25,7 @@ def parse_arguments():
         return args.config
 
 
-def main():
+def main() -> None:
     json_config_file_path = parse_arguments()
 
     container = iot.IOTContainer(json_config_file_path)
