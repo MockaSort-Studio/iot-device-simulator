@@ -1,0 +1,16 @@
+[project]
+name = "bore-depth"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "paho-mqtt==1.6.1",
+    "schedule==1.1.0",
+    "json-schema-codegen==0.6.1",
+    "orjson>=3.11.5",
+]
+
+[dependency-groups]
+dev = ["ruff>=0.14.13"]
+
+[tool.uv.sources]
+iotsim = { path = "./iotsim" }

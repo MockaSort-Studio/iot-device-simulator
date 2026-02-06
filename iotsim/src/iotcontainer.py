@@ -17,13 +17,15 @@ class ProgramKilled(Exception):
 
 
 class IOTContainer:
-
     def __init__(self, json_config_file_path):
-        logger_cfg, client_cfg, pods_cfg = self.load_config(
-            json_config_file_path)
+        logger_cfg, client_cfg, pods_cfg = self.load_config(json_config_file_path)
         sys.path.append(pods_cfg.GetPodsPyModulePath().Get())
-        logging.basicConfig(filename=logger_cfg.GetFilePath().Get(
-        ), filemode='w', format='%(asctime)s -%(levelname)s- %(message)s', level=logger_cfg.GetVerbosity().Get())
+        logging.basicConfig(
+            filename=logger_cfg.GetFilePath().Get(),
+            filemode="w",
+            format="%(asctime)s -%(levelname)s- %(message)s",
+            level=logger_cfg.GetVerbosity().Get(),
+        )
         self.bind_signal_handlers()
         self.setup_daemon_thread()
         self.setup_client(client_cfg)
@@ -52,7 +54,8 @@ class IOTContainer:
         self.shutdown_flag = threading.Event()
         self.scheduler = schedule
         self.scheduler_thread = threading.Thread(
-            name='scheduler daemon', target=self.daemon_scheduler)
+            name="scheduler daemon", target=self.daemon_scheduler
+        )
         self.scheduler_thread.setDaemon(True)
 
     def setup_client(self, client_cfg):
@@ -64,7 +67,7 @@ class IOTContainer:
             pods_list = json.load(open(pods_cfg.GetPodsListFilePath().Get()))
             for pod in pods_list:
                 pod_tmp = IOTUnit(pod, self.client, self.scheduler)
-                self.pods_map[pod['name']] = pod_tmp
+                self.pods_map[pod["name"]] = pod_tmp
         except Exception:
             logging.error("init iot units failed")
             raise ValueError

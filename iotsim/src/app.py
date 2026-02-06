@@ -8,8 +8,16 @@ import os
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", "--config", help="Absolute path to <config>.json",
-                        action="store", default=os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../config') + "/config-default.json")
+    parser.add_argument(
+        "-c",
+        "--config",
+        help="Absolute path to <config>.json",
+        action="store",
+        default=os.path.normpath(
+            os.path.dirname(os.path.abspath(__file__)) + "/../config"
+        )
+        + "/config-default.json",
+    )
     args = parser.parse_args()
     if not args.config:
         raise iot.ProgramKilled

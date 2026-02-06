@@ -1,0 +1,52 @@
+{
+    "name": "Python 3",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
+    "features": {
+        "ghcr.io/stuartleeks/dev-container-features/shell-history:0": {},
+        "ghcr.io/dhoeric/features/hadolint:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "astral-sh.ty",
+                "charliermarsh.ruff",
+                "exiasr.hadolint",
+                "kevinrose.vsc-python-indent",
+                "mosapride.zenkaku",
+                "ms-azuretools.vscode-docker",
+                "ms-python.python",
+                "njpwerner.autodocstring",
+                "redhat.vscode-yaml",
+                "shardulm94.trailing-spaces",
+                "streetsidesoftware.code-spell-checker",
+                "tamasfe.even-better-toml",
+                "yzhang.markdown-all-in-one"
+            ]
+        }
+    },
+    "initializeCommand": "mkdir -p ${localEnv:HOME}/.cache && chmod 777 ${localEnv:HOME}/.cache",
+    "mounts": [
+        {
+            "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.cache",
+            "target": "/home/vscode/.cache",
+            "type": "bind"
+        },
+        {
+            "source": "venv-${devcontainerId}",
+            "target": "${containerWorkspaceFolder}/.venv",
+            "type": "volume"
+        }
+    ],
+    "containerEnv": {
+        "DISPLAY": "${localEnv:DISPLAY}",
+        "UV_PROJECT_ENVIRONMENT": "${containerWorkspaceFolder}/.venv"
+    },
+    "runArgs": [
+        "--network=host",
+    ],
+    "updateContentCommand": "sudo chown -R vscode /workspaces",
+    "postCreateCommand": "uv sync --frozen"
+}

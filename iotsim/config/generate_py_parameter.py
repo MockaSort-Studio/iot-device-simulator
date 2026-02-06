@@ -5,13 +5,18 @@ import os
 
 
 def generate_parameters():
-    json_model_path = os.path.dirname(os.path.abspath(__file__)) + '/config_model.json'
-    root = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '/../src')
+    json_model_path = os.path.dirname(os.path.abspath(__file__)) + "/config_model.json"
+    root = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + "/../src")
     fp = open(json_model_path)
     generator = pygen.GeneratorFromSchema(root)
-    generator.Generate(json.load(fp), root=root,
-                       class_name='Parameters', filename_base='generated_parameters')
+    generator.Generate(
+        json.load(fp),
+        root=root,
+        class_name="Parameters",
+        filename_base="generated_parameters",
+    )
     print("***** parameters.py generated in:", root)
+
 
 def main():
     print("*****Generating python model class from json schema*****")
@@ -19,6 +24,7 @@ def main():
     generate_parameters()
     print("\n")
     print("*************************Done***************************")
+
 
 if __name__ == "__main__":
     main()

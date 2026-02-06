@@ -70,26 +70,30 @@ class MQTTClient(Client):
             if client_cfg.GetRootCa().Get() != "":
                 self._init_ssl_context(client_cfg=client_cfg)
                 self._client.tls_set_context(self.ssl_context)
-            self._client.connect(client_cfg.GetHost().Get(),
-                                 client_cfg.GetPort().Get())
+            self._client.connect(client_cfg.GetHost().Get(), client_cfg.GetPort().Get())
         except Exception:
             logging.error("init_mqtt_connection failed for %s", self.name)
             raise ValueError
-        logging.info('client %(name)s successfully connected to broker %(host)s:%(port)s', {
-                     'name': self.name, 'host': client_cfg.GetHost().Get(), 'port': client_cfg.GetPort().Get()})
+        logging.info(
+            "client %(name)s successfully connected to broker %(host)s:%(port)s",
+            {
+                "name": self.name,
+                "host": client_cfg.GetHost().Get(),
+                "port": client_cfg.GetPort().Get(),
+            },
+        )
 
     def _init_ssl_context(self, client_cfg):
         try:
             self.ssl_context = ssl.create_default_context()
-            self.ssl_context.load_verify_locations(
-                client_cfg.GetRootCa().Get())
+            self.ssl_context.load_verify_locations(client_cfg.GetRootCa().Get())
             self.ssl_context.load_cert_chain(
-                client_cfg.GetClientCertificate().Get(), client_cfg.GetClientKey().Get())
+                client_cfg.GetClientCertificate().Get(), client_cfg.GetClientKey().Get()
+            )
         except Exception:
-            logging.error('init_ssl_context failed for %s',
-                          client_cfg.GetId().Get())
+            logging.error("init_ssl_context failed for %s", client_cfg.GetId().Get())
             raise ValueError
-        logging.info('ssl_context created for %s', client_cfg.GetId().Get())
+        logging.info("ssl_context created for %s", client_cfg.GetId().Get())
 
 
 class ClientType(Enum):
@@ -97,9 +101,7 @@ class ClientType(Enum):
     none = -1
 
 
-_nameToClientType = {
-    'mqtt': ClientType.mqtt
-}
+_nameToClientType = {"mqtt": ClientType.mqtt}
 
 
 def GetType(string):
@@ -119,6 +121,7 @@ class ClientBuilder:
             client = MQTTClient(client_parameters=client_parameters)
             return client
         else:
-            logging.error("Client type %s not supported",
-                          client_parameters.GetType().Get())
+            logging.error(
+                "Client type %s not supported", client_parameters.GetType().Get()
+            )
             raise ValueError("only mqtt client type supported")
