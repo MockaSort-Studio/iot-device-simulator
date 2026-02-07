@@ -74,13 +74,14 @@ class IOTContainer:
             raise ValueError
 
     def init_units(self, units_cfg: tp.UnitsConfig) -> None:
-        self.unit_register = {}
+        self.unit_register: dict[str, IOTUnit] = {}
         try:
             with open(units_cfg.units_list_file_path, "rb") as f:
                 units_list_json = json.loads(f.read())
             for unit in units_list_json:
-                unit_tmp = IOTUnit(unit, self.network_client, self.scheduler)
-                self.unit_register[unit["name"]] = unit_tmp
+                unit_model = tp.parse_unit_from_json(unit)
+                unit_tmp = IOTUnit(unit_model, self.network_client, self.scheduler)
+                self.unit_register[unit_model.name] = unit_tmp
         except Exception:
             logging.error("init iot units failed")
             raise ValueError
