@@ -3,12 +3,11 @@ import logging
 import signal
 import sys
 import threading
-import time
 from typing import Any, Dict
 
 import config.types as tp
 import orjson as json
-import schedule
+from apscheduler.schedulers.background import BackgroundScheduler
 from core.iotunit import IOTUnit
 from core.networkclients import NetworkInterface, NetworkInterfaceBuilder
 
@@ -25,16 +24,13 @@ class IOTContainer:
             filename=logger_cfg.file_path,
             filemode="w",
             format="%(asctime)s -%(levelname)s- %(message)s",
-            level=logging.DEBUG,
+            level=logger_cfg.verbosity,
         )
         self.unit_register: Dict[str, IOTUnit]
         self.network_client: NetworkInterface
-        self.shutdown_flag: threading.Event
-        self.scheduler: schedule.Scheduler
-        self.scheduler_thread: threading.Thread
-
+        self.scheduler = BackgroundScheduler()
+        self.shutdown_flag: threading.Event = threading.Event()
         self.bind_signal_handlers()
-        self.setup_daemon_thread()
         self.setup_client(client_cfg)
         self.init_units(units_cfg)
 
@@ -52,18 +48,10 @@ class IOTContainer:
         signal.signal(signal.SIGTERM, self.signal_handler)
         signal.signal(signal.SIGINT, self.signal_handler)
 
-    def signal_handler(self, signum: int, frame: Any) -> None:
+    def signal_handler(self, _: int, frame: Any) -> None:
         self.shutdown_flag.set()
         logging.info("shutdown signal received")
         raise ProgramKilled
-
-    def setup_daemon_thread(self) -> None:
-        self.shutdown_flag = threading.Event()
-        self.scheduler = schedule.Scheduler()
-        self.scheduler_thread = threading.Thread(
-            name="scheduler daemon", target=self.daemon_scheduler
-        )
-        self.scheduler_thread.daemon = True
 
     def setup_client(self, client_cfg: tp.ClientConfig) -> None:
         try:
@@ -86,20 +74,15 @@ class IOTContainer:
             raise ValueError
         logging.info("iot units initialized -> %s", self.unit_register.keys())
 
-    def daemon_scheduler(self) -> None:
-        while not self.shutdown_flag.is_set():
-            self.scheduler.run_pending()
-            time.sleep(0.5)
-        logging.info("scheduler daemon clean shutdown")
-        self.scheduler.clear()
-        logging.info("scheduler stopped")
-
     def run(self) -> None:
-        logging.info("starting container")
-        self.scheduler_thread.start()
+        logging.info(
+            "Starting IOT Container - this call starts background threads, be sure to block execution afterwards"
+        )
         self.network_client.start()
+        self.scheduler.start()
 
     def shutdown(self) -> None:
-        logging.info("stopping container")
-        self.scheduler_thread.join()
+        logging.info("Shutting down...")
+        self.scheduler.shutdown(wait=True)
         self.network_client.stop()
+        logging.info("Container stopped.")

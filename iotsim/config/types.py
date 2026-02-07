@@ -43,7 +43,7 @@ class PublisherModel(BaseModel):
     id: str = Field(..., description="Publisher ID")
     topic: str = Field(..., description="Topic to publish to")
     read: str = Field(..., description="Key of the register to read data from")
-    cycle_time_ms: int = Field(
+    publish_frequency_ms: int = Field(
         default=1000,
         description="Publishing interval in milliseconds ",
     )

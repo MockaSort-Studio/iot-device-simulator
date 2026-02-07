@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 import importlib
 import logging
-import threading
-from typing import Any, Callable, Dict
+from typing import Dict
 
-import schedule
+from apscheduler.schedulers.background import BackgroundScheduler
 from config.types import PublisherModel, SubscriberModel, UnitModel
 from core.datapublisher import DataPublisher
 from core.datasubscriber import DataSubscriber
@@ -17,12 +16,11 @@ class IOTUnit:
         self,
         unit_model: UnitModel,
         client: NetworkInterface,
-        scheduler: schedule.Scheduler,
+        scheduler: BackgroundScheduler,
     ) -> None:
         self.client = client  # to be improved with complete refactoring
         self.name = unit_model.name
-        self.registers = unit_model.registers
-        self.state_registry = StateRegistry(self.registers)
+        self.state_registry = StateRegistry(unit_model.registers)
         self.publishers: Dict[str, DataPublisher] = {}
         self.subscribers: Dict[str, DataSubscriber] = {}
 
@@ -34,18 +32,21 @@ class IOTUnit:
         )  # step 4 -> init control loop
         self.init_control_loop(scheduler, unit_model)
 
-    def _control_loop_internal(self, control_loop_func: Callable) -> None:
-        control_loop_func(self.registers)
-
     def init_control_loop(
-        self, scheduler: schedule.Scheduler, model: UnitModel
+        self, scheduler: BackgroundScheduler, model: UnitModel
     ) -> None:
         try:
-            sleep_time = int(model.control_loop_sleep_ms / 1000)
+            sleep_time = model.control_loop_sleep_ms / 1000
             control_loop_module = importlib.import_module(model.control_loop_module)
-            scheduler.every(sleep_time).seconds.do(
-                self.control_loop_threaded, control_loop_module.run
+            scheduler.add_job(
+                control_loop_module.run,
+                "interval",
+                seconds=sleep_time,
+                args=[self.state_registry],
+                coalesce=False,
+                max_instances=1,
             )
+
             logging.info(
                 "control loop %(loop)s initialized for unit %(name)s",
                 {"loop": control_loop_module, "name": self.name},
@@ -55,11 +56,17 @@ class IOTUnit:
             raise ValueError
 
     def init_data_publishers(
-        self, scheduler: schedule.Scheduler, pubList: list[PublisherModel]
+        self, scheduler: BackgroundScheduler, pubList: list[PublisherModel]
     ) -> None:
         for pub in pubList:
-            pub_tmp = DataPublisher(
-                scheduler, pub, self.client.publish, self.state_registry
+            pub_tmp = DataPublisher(pub, self.client, self.state_registry)
+            scheduler.add_job(
+                pub_tmp.publish,
+                "interval",
+                seconds=pub_tmp.publish_frequency_ms / 1000,
+                coalesce=False,
+                # args=[pub_tmp],  # self
+                max_instances=1,
             )
             self.publishers[pub.id] = pub_tmp
         logging.debug(
@@ -76,17 +83,3 @@ class IOTUnit:
         logging.debug(
             "init data subscribers -subscribers:%s", list(self.subscribers.keys())
         )
-
-    def get_register_value(self, key: str) -> Any:
-        return self.registers[key]
-
-    def set_register_value(self, key: str, value: Any) -> None:
-        logging.debug(
-            "setting register %(key)s -> old value:%(oldV)s new value:%(newV)s",
-            {"key": key, "oldV": self.registers[key], "newV": value},
-        )
-        self.registers[key] = value
-
-    def control_loop_threaded(self, job_func: Callable) -> None:
-        job_thread = threading.Thread(target=job_func, args=(self.registers,))
-        job_thread.start()

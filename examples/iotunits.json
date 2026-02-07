@@ -10,7 +10,7 @@
 		"publishers": [
 			{
 				"id": "temperature_pub",
-				"cycle_time_ms": 1000,
+				"publish_frequency_ms": 1000,
 				"read": "temperature",
 				"topic": "unit/temperature"
 			}

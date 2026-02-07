@@ -5,9 +5,8 @@ name = "iot-device-simulator"
 version = "1.0.0"
 requires-python = ">=3.12"
 dependencies = [
-    "paho-mqtt>=1.6.1",
+    "paho-mqtt>=2.1.0",
     "apscheduler>=3.11.2",
-    "schedule>=1.1.0",
     "orjson>=3.11.5",
     "pydantic>=2.12.5",
 ]

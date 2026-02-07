@@ -55,7 +55,15 @@ class MQTTNetworkInterface(NetworkInterface):
 
     def subscribe(self, topic: str, on_message_callback: Callable) -> None:
         if self._client:
-            self._client.message_callback_add(topic, on_message_callback)
+
+            def on_message(client: Any, userdata: Any, message: Any) -> None:
+                logging.debug(
+                    "Received message on topic %(topic)s: %(payload)s",
+                    {"topic": message.topic, "payload": message.payload},
+                )
+                on_message_callback(message.payload.decode("utf-8"))
+
+            self._client.message_callback_add(topic, on_message)
             self._client.subscribe(topic)
 
     def _init_mqtt_client(self, client_cfg: ClientConfig) -> None:
