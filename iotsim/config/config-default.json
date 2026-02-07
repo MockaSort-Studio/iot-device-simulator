@@ -1,6 +1,6 @@
 {
     "logger": {
-        "file_path": "/workspace/iot-container.log",
+        "file_path": "/workspaces/iot-device-simulator/iotsim.log",
         "verbosity": "DEBUG"
     },
     "client": {
@@ -13,7 +13,7 @@
         "client_key_path": ""
     },
     "units": {
-        "units_list_file_path": "/workspace/examples/iotunits.json",
-        "pods_py_module_path": "/workspace/examples/"
+        "units_list_file_path": "/workspaces/iot-device-simulator/examples/iotunits.json",
+        "units_py_module_path": "/workspaces/iot-device-simulator/examples/"
     }
 }

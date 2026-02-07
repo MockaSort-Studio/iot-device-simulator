@@ -31,9 +31,9 @@ def parse_config(
     json_dict: Dict[str, Any],
 ) -> tuple[LoggerConfig, ClientConfig, UnitsConfig]:
     try:
-        logger_cfg = LoggerConfig(**json_dict["logger"])
-        client_cfg = ClientConfig(**json_dict["client"])
-        units_cfg = UnitsConfig(**json_dict["units"])
+        logger_cfg = LoggerConfig.model_validate(json_dict["logger"])
+        client_cfg = ClientConfig.model_validate(json_dict["client"])
+        units_cfg = UnitsConfig.model_validate(json_dict["units"])
         return logger_cfg, client_cfg, units_cfg
     except KeyError as e:
         raise ValueError(f"Missing required config section: {e}")
@@ -41,28 +41,18 @@ def parse_config(
 
 class PublisherModel(BaseModel):
     id: str = Field(..., description="Publisher ID")
-    type: str = Field(..., description="Publisher Type: NOTIFICATION or PERIODIC")
     topic: str = Field(..., description="Topic to publish to")
     read: str = Field(..., description="Key of the register to read data from")
-    cycle_time_ms: int | None = Field(
-        default=None,
-        description="Publishing interval in milliseconds (only for PERIODIC publishers)",
+    cycle_time_ms: int = Field(
+        default=1000,
+        description="Publishing interval in milliseconds ",
     )
 
 
 class SubscriberModel(BaseModel):
     id: str = Field(..., description="Subscriber ID")
-    type: str = Field(..., description="Subscriber Type: REQUEST or DATA_WRITE")
     topic: str = Field(..., description="Topic to subscribe to")
     write: str = Field(..., description="Key of the register to write data to")
-    request_module: str | None = Field(
-        default=None,
-        description="Path to module containing request handling logic (only for REQUEST subscribers)",
-    )
-    notifier: str | None = Field(
-        default=None,
-        description="ID of the NOTIFICATION publisher to trigger after handling the request (only for REQUEST subscribers)",
-    )
 
 
 class UnitModel(BaseModel):
@@ -74,18 +64,18 @@ class UnitModel(BaseModel):
     subscribers: list[SubscriberModel] = Field(
         default_factory=list, description="List of Unit Data Subscribers"
     )
-    control_loop_module: str | None = Field(
-        default=None,
+    control_loop_module: str = Field(
+        ...,
         description="Path to module containing control loop logic (optional)",
     )
-    control_loop_sleep_ms: int | None = Field(
-        default=None,
+    control_loop_sleep_ms: int = Field(
+        ...,
         description="Sleep time in milliseconds for control loop execution (optional)",
     )
 
 
 def parse_unit_from_json(json_dict: Dict[str, Any]) -> UnitModel:
     try:
-        return UnitModel(**json_dict)
+        return UnitModel.model_validate(json_dict, strict=False)
     except KeyError as e:
         raise ValueError(f"Missing required unit config field: {e}")

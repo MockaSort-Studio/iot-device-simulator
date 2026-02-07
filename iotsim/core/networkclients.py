@@ -7,8 +7,7 @@ from threading import Lock
 from typing import Optional
 
 import paho.mqtt.client as mqtt
-
-from iotsim.config.types import ClientConfig
+from config.types import ClientConfig
 
 
 class SingletonMeta(ABCMeta):

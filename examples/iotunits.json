@@ -1,38 +1,5 @@
 [
 	{
-		"name": "smart_elevator",
-		"control_loop_module": null,
-		"control_loop_sleep_ms": 1000,
-		"registers": {
-			"requested_floor": 0,
-			"elevator_info": {
-				"door": "close",
-				"floor": 2,
-				"error_code": "",
-				"recv_cmd": "",
-				"message": ""
-			},
-			"elevator_res": ""
-		},
-		"publishers": [
-			{
-				"id": "elevator_pub",
-				"type": "NOTIFICATION",
-				"read": "elevator_res",
-				"topic": "unit/elevator_response"
-			}
-		],
-		"subscribers": [
-			{
-				"id": "robot_sub",
-				"type": "REQUEST",
-				"request_module": "smart_elevator.control_request",
-				"notifier": "elevator_pub",
-				"topic": "unit/robot_request"
-			}
-		]
-	},
-	{
 		"name": "temperature_sensor",
 		"control_loop_module": "temperature_sensor.control_loop",
 		"control_loop_sleep_ms": 5000,
@@ -43,7 +10,6 @@
 		"publishers": [
 			{
 				"id": "temperature_pub",
-				"type": "PERIODIC",
 				"cycle_time_ms": 1000,
 				"read": "temperature",
 				"topic": "unit/temperature"
@@ -52,7 +18,6 @@
 		"subscribers": [
 			{
 				"id": "temperature_sensor_command_sub",
-				"type": "DATA_WRITE",
 				"write": "status",
 				"topic": "unit/temperature/status"
 			}

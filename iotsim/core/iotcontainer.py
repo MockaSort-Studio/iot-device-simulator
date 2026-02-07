@@ -6,12 +6,11 @@ import threading
 import time
 from typing import Any, Dict
 
+import config.types as tp
 import orjson as json
 import schedule
-
-import iotsim.config.types as tp
-from iotsim.core.iotunit import IOTUnit
-from iotsim.core.networkclients import Client, ClientBuilder
+from core.iotunit import IOTUnit
+from core.networkclients import Client, ClientBuilder
 
 
 class ProgramKilled(Exception):
@@ -26,7 +25,7 @@ class IOTContainer:
             filename=logger_cfg.file_path,
             filemode="w",
             format="%(asctime)s -%(levelname)s- %(message)s",
-            level=logger_cfg.verbosity,
+            level=logging.DEBUG,
         )
         self.unit_register: Dict[str, IOTUnit]
         self.network_client: Client

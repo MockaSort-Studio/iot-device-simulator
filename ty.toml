@@ -3,5 +3,5 @@ respect-ignore-files = true
 exclude = [".venv/"]
 
 [environment]
-extra-paths = ["./iotsim"]
+extra-paths = ["./iotsim/core", "./iotsim/config"]
 root = ["./"]

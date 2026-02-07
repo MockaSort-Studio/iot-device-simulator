@@ -16,6 +16,8 @@ RUN sudo apt-get install --no-install-recommends --assume-yes \
     libosmesa6-dev \
     x11-apps \
     git-lfs \
+    mosquitto \
+    mosquitto-clients \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

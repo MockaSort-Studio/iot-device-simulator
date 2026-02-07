@@ -3,7 +3,7 @@ import argparse
 import os
 import time
 
-import iotsim.core.iotcontainer as iot
+import core.iotcontainer as iot
 
 
 def parse_arguments() -> str:
@@ -13,9 +13,7 @@ def parse_arguments() -> str:
         "--config",
         help="Absolute path to <config>.json",
         action="store",
-        default=os.path.normpath(
-            os.path.dirname(os.path.abspath(__file__)) + "/../config"
-        )
+        default=os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + "/config")
         + "/config-default.json",
     )
     args = parser.parse_args()
