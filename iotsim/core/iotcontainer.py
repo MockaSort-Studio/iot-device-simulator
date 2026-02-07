@@ -10,7 +10,7 @@ import config.types as tp
 import orjson as json
 import schedule
 from core.iotunit import IOTUnit
-from core.networkclients import Client, ClientBuilder
+from core.networkclients import NetworkInterface, NetworkInterfaceBuilder
 
 
 class ProgramKilled(Exception):
@@ -28,7 +28,7 @@ class IOTContainer:
             level=logging.DEBUG,
         )
         self.unit_register: Dict[str, IOTUnit]
-        self.network_client: Client
+        self.network_client: NetworkInterface
         self.shutdown_flag: threading.Event
         self.scheduler: schedule.Scheduler
         self.scheduler_thread: threading.Thread
@@ -67,7 +67,7 @@ class IOTContainer:
 
     def setup_client(self, client_cfg: tp.ClientConfig) -> None:
         try:
-            self.network_client = ClientBuilder.build(client_cfg)
+            self.network_client = NetworkInterfaceBuilder.build(client_cfg)
         except Exception:
             logging.error("setup network client failed")
             raise ValueError

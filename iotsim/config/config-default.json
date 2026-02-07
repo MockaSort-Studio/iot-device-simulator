@@ -4,7 +4,7 @@
         "verbosity": "DEBUG"
     },
     "client": {
-        "id": "test_client",
+        "name": "test_client",
         "type": "mqtt",
         "host": "localhost",
         "port": 1883,

@@ -8,16 +8,21 @@ import schedule
 from config.types import PublisherModel, SubscriberModel, UnitModel
 from core.datapublisher import DataPublisher
 from core.datasubscriber import DataSubscriber
-from core.networkclients import Client
+from core.networkclients import NetworkInterface
+from core.stateregistry import StateRegistry
 
 
 class IOTUnit:
     def __init__(
-        self, unit_model: UnitModel, client: Client, scheduler: schedule.Scheduler
+        self,
+        unit_model: UnitModel,
+        client: NetworkInterface,
+        scheduler: schedule.Scheduler,
     ) -> None:
         self.client = client  # to be improved with complete refactoring
         self.name = unit_model.name
         self.registers = unit_model.registers
+        self.state_registry = StateRegistry(self.registers)
         self.publishers: Dict[str, DataPublisher] = {}
         self.subscribers: Dict[str, DataSubscriber] = {}
 
@@ -54,10 +59,7 @@ class IOTUnit:
     ) -> None:
         for pub in pubList:
             pub_tmp = DataPublisher(
-                scheduler,
-                pub,
-                self.client.client.publish,
-                self.get_register_value,
+                scheduler, pub, self.client.publish, self.state_registry
             )
             self.publishers[pub.id] = pub_tmp
         logging.debug(
@@ -69,7 +71,7 @@ class IOTUnit:
 
     def init_data_subscribers(self, subList: list[SubscriberModel]) -> None:
         for sub in subList:
-            sub_tmp = DataSubscriber(sub, self.client.client, self.set_register_value)
+            sub_tmp = DataSubscriber(sub, self.client, self.state_registry)
             self.subscribers[sub.id] = sub_tmp
         logging.debug(
             "init data subscribers -subscribers:%s", list(self.subscribers.keys())

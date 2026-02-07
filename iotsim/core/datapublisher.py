@@ -6,6 +6,7 @@ from typing import ByteString, Callable
 import orjson as json
 import schedule
 from config.types import PublisherModel
+from core.stateregistry import StateRegistry
 
 
 class DataPublisher:
@@ -14,13 +15,13 @@ class DataPublisher:
         scheduler: schedule.Scheduler,
         publisher_model: PublisherModel,
         client_publish: Callable[[str, ByteString], None],
-        register_value_getter: Callable[[str], str],
+        data_registry: StateRegistry,
         # here we want to avoid the circular import, so we use a string literal for the type hint
     ) -> None:
         self.register_read_key = publisher_model.read
         self.topic = publisher_model.topic
         self.register_publisher(scheduler, publisher_model)
-        self.register_value_getter = register_value_getter
+        self.data_registry = data_registry
         self.client_publish = client_publish
 
     def register_publisher(self, scheduler: schedule.Scheduler, model: PublisherModel):
@@ -37,5 +38,5 @@ class DataPublisher:
         job_thread.start()
 
     def publish(self) -> None:
-        payload = self.register_value_getter(self.register_read_key)
+        payload = self.data_registry.get_value(self.register_read_key)
         self.client_publish(self.topic, json.dumps(payload))

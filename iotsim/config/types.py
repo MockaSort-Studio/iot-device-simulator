@@ -9,7 +9,7 @@ class LoggerConfig(BaseModel):
 
 
 class ClientConfig(BaseModel):
-    id: str = Field(..., description="Client ID")
+    name: str = Field(..., description="Client ID")
     type: str = Field(
         default="mqtt", description="Protocol Type: currently supports: mqtt"
     )
