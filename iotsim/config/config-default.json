@@ -1,6 +1,6 @@
 {
     "logger": {
-        "file_path": "/iotsim.log",
+        "file_path": "./iotsim.log",
         "verbosity": "DEBUG"
     },
     "client": {

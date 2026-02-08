@@ -29,6 +29,7 @@ class IOTContainer:
             filemode="w",
             format="%(asctime)s -%(levelname)s- %(message)s",
             level=logger_cfg.verbosity,
+            force=True,
         )
         self.unit_register: Dict[str, IOTUnit]
         self.network_client: NetworkInterface
