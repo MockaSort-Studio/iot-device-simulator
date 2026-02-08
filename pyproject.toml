@@ -45,8 +45,4 @@ testpaths = ["tests"]
 python_files = "*_test.py"
 python_functions = "test_*"
 python_classes = "Test*"
-addopts = [
-    "--import-mode=importlib",
-    "--cov=iotsim",
-    "--cov-report=term-missing:skip-covered",
-]
+addopts = ["--import-mode=importlib"]

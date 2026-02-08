@@ -24,9 +24,9 @@ jobs:
       - name: Build
         run: uv build
       - name: Smoke test (wheel)
-        run: uv run --isolated --no-project --with dist/*.whl pytest
+        run: uv run --isolated --no-project --with dist/*.whl --with pytest pytest
       - name: Smoke test (source distribution)
-        run: uv run --isolated --no-project --with dist/*.tar.gz pytest
+        run: uv run --isolated --no-project --with dist/*.tar.gz --with pytest pytest
       - name: Persist Dist
         uses: actions/upload-artifact@v6
         with:
@@ -48,7 +48,7 @@ jobs:
           uv pip install coverage-badge
 
           # Run tests and generate the SVG
-          uv run pytest > pytest-coverage.txt
+          uv run pytest --cov=iotsim --cov-report=term-missing:skip-covered > pytest-coverage.txt
           uv run coverage-badge -o coverage.svg
 
       - name: Deploy Badge to Branch
