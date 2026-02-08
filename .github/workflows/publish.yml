@@ -13,8 +13,9 @@ jobs:
         with:
           fetch-depth: 0
       - uses: astral-sh/setup-uv@v7
-      - name: Install Python 3.12
-        run: uv python install 3.12
+        with:
+          python-version: "3.12"
+          enable-cache: true
       - name: Build
         run: uv build
       - name: Smoke test (wheel)
@@ -27,8 +28,38 @@ jobs:
           name: python-dist
           path: dist/
 
+  coverage:
+    needs: smoke-test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+          enable-cache: true
+      - name: Generate Coverage Report
+        run: |
+          uv sync --all-extras --dev
+          uv pip install coverage-badge
+
+          # Run tests and generate the SVG
+          uv run pytest > pytest-coverage.txt
+          uv run coverage-badge -o coverage.svg
+
+      - name: Deploy Badge to Branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: badges
+          destination_dir: .
+          # Only keep the coverage.svg file in that branch
+          exclude_assets: ".git, .github, iotsim, .vscode, .devcontainer, tests, pyproject.toml, ty.toml, README.md, LICENSE, .python-version, .gitignore, .coveragerc, Dockerfile, uv.lock, README.md"
+
   publish-pypi:
-    needs: build-and-test
+    needs: smoke-test
     runs-on: ubuntu-latest
     environment:
       name: pypi
@@ -44,7 +75,7 @@ jobs:
       - run: uv publish
 
   github-release:
-    needs: build-and-test
+    needs: smoke-test
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -63,7 +94,7 @@ jobs:
           prerelease: false
 
   deploy-docker:
-    needs: build-and-test # Runs in parallel with PyPI and Release
+    needs: smoke-test # Runs in parallel with PyPI and Release
     runs-on: ubuntu-latest
     permissions:
       packages: write
