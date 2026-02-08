@@ -1,10 +1,10 @@
 # IoT Device Simulator
 
-![Build Status](https://github.com/MockaSort-Studio/iot-device-simulator/actions/workflows/publish.yml/badge.svg)
-[![Coverage](https://raw.githubusercontent.com/MockaSort-Studio/iot-device-simulator/badges/coverage.svg)](https://github.com/MockaSort-Studio/iot-device-simulator/tree/badges)
+![Build Status](https://github.com/mockaSort-studio/iot-device-simulator/actions/workflows/publish.yml/badge.svg)
+[![Coverage](https://raw.githubusercontent.com/mockaSort-studio/iot-device-simulator/badges/coverage.svg)](https://github.com/mockaSort-studio/iot-device-simulator/tree/badges)
 ![PyPI Version](https://img.shields.io/pypi/v/iotsim)
 ![Python Version](https://img.shields.io/pypi/pyversions/iotsim)
-![License](https://img.shields.io/github/license/MockaSort-Studio/iot-device-simulator)
+![License](https://img.shields.io/github/license/mockaSort-studio/iot-device-simulator)
 ![Docker Image](https://img.shields.io/badge/container-GHCR-blue)
 
 Python IoT device simulator consisting of an IoT Container running units representing IoT devices defined in a json file (see [iotunits.json](examples/iotunits.json)), a smart elevator and a temperature sensor implementation can be found in the [examples](examples) folder.

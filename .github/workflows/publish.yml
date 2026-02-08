@@ -45,11 +45,9 @@ jobs:
       - name: Generate Coverage Report
         run: |
           uv sync --all-extras --dev
-          uv pip install coverage-badge
-
           # Run tests and generate the SVG
-          uv run pytest --cov=iotsim --cov-report=term-missing:skip-covered > pytest-coverage.txt
-          uv run coverage-badge -o coverage.svg
+          uv run pytest --cov=iotsim --cov-report=xml
+          uv run genbadge coverage -i coverage.xml -o coverage.svg
 
       - name: Deploy Badge to Branch
         uses: peaceiris/actions-gh-pages@v4
@@ -78,6 +76,8 @@ jobs:
   github-release:
     needs: smoke-test
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v7
