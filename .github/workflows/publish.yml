@@ -6,7 +6,7 @@ on:
       - "v*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
   id-token: write
 
@@ -49,16 +49,15 @@ jobs:
           uv run pytest --cov=iotsim --cov-report=xml
           uv run genbadge coverage -i coverage.xml -o coverage.svg
 
-      - name: Deploy Badge to Branch
+          mkdir public
+          mv coverage.svg public/
+      - name: Deploy Badge Only
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
+          publish_dir: ./public
           publish_branch: badges
-          destination_dir: .
-          # Only keep the coverage.svg file in that branch
-          exclude_assets: ".git, .github, iotsim, .vscode, .devcontainer, tests, pyproject.toml, ty.toml, README.md, LICENSE, .python-version, .gitignore, .coveragerc, Dockerfile, uv.lock, README.md"
-
+          force_orphan: true
   publish-pypi:
     needs: smoke-test
     runs-on: ubuntu-latest
@@ -76,8 +75,6 @@ jobs:
   github-release:
     needs: smoke-test
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v6
       - uses: actions/download-artifact@v7
@@ -113,5 +110,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/iotsim:latest
-            ghcr.io/${{ github.repository_owner }}/iotsim:${{ github.ref_name }}
+            ghcr.io/mockasort-studio/iotsim:latest
+            ghcr.io/mockasort-studio/iotsim:${{ github.ref_name }}
