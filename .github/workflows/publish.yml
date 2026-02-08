@@ -109,6 +109,10 @@ jobs:
         with:
           context: .
           push: true
+          # Use the GitHub expression directly without extra escaped quotes
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.description=IoT Device Simulator
           tags: |
             ghcr.io/mockasort-studio/iotsim:latest
             ghcr.io/mockasort-studio/iotsim:${{ github.ref_name }}

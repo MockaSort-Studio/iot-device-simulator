@@ -1,9 +1,8 @@
 # IoT Device Simulator
 
-![Build Status](https://github.com/mockaSort-studio/iot-device-simulator/actions/workflows/publish.yml/badge.svg)
 [![Coverage](https://raw.githubusercontent.com/mockaSort-studio/iot-device-simulator/badges/coverage.svg)](https://github.com/mockaSort-studio/iot-device-simulator/tree/badges)
 ![PyPI Version](https://img.shields.io/pypi/v/iotsim)
-![Python Version](https://img.shields.io/pypi/pyversions/iotsim)
+![Python Version](https://img.shields.io/pypi/pyverions/iotsim)
 ![License](https://img.shields.io/github/license/mockaSort-studio/iot-device-simulator)
 ![Docker Image](https://img.shields.io/badge/container-GHCR-blue)
 
@@ -19,7 +18,7 @@ Open folder in devcontainer, then you should be good to go
 uv sync (optional)
 ```
 
-create json config, use [config-default.json](iotsim/config/config-default.json) as template
+create json config, use [config-default.json](https://github.com/MockaSort-Studio/iot-device-simulator/blob/main/iotsim/config/config-default.json) as template
 ```
 {
     "logger": {

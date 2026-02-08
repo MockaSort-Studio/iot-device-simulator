@@ -1,6 +1,10 @@
 [project]
 name = "iotsim"
 dynamic = ["version"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+]
 description = "IoT Device Simulator for developing and testing downstream logic relying on IoT physical devices"
 authors = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
 requires-python = ">=3.12"
