@@ -48,6 +48,19 @@ Run simulator
 uv run iotsim/main.py --config <path-to-config.json> #if no argument is set the app will make use of the default config-default.json
 ```
 
+Docker
+```
+docker build -t iotsim:local .
+docker run --network=host iotsim:local
+
+or
+
+docker pull ghcr.io/mockasort-studio/iotsim:latest
+```
+
+
+
+
 ## Implement your own IoT Units
 
 An IoT unit can be anything you wish, the package makes use of [importlib](https://docs.python.org/3/library/importlib.html) to import user defined module at runtime just by declaring them in the iotunits.json.
