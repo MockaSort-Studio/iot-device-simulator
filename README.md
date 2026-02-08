@@ -23,7 +23,7 @@ create json config, use [config-default.json](iotsim/config/config-default.json)
 ```
 {
     "logger": {
-        "file_path": "/workspaces/iot-device-simulator/iotsim.log",
+        "file_path": "./iotsim.log",
         "verbosity": "DEBUG"
     },
     "client": {
@@ -36,8 +36,8 @@ create json config, use [config-default.json](iotsim/config/config-default.json)
         "client_key_path": ""
     },
     "units": {
-        "units_list_file_path": "/workspaces/iot-device-simulator/examples/iotunits.json",
-        "units_py_module_path": "/workspaces/iot-device-simulator/examples/"
+        "units_list_file_path": "", #leaving it blank will load examples
+        "units_py_module_path": ""  #leaving it blank will load examples
     }
 }
 
@@ -46,18 +46,7 @@ create json config, use [config-default.json](iotsim/config/config-default.json)
 
 Run simulator
 ```
-uv run iotsim/main.py --config <path-to-config.json>
-```
-if no argument are set the app will make use of the default config-default.json
-
-Run simulator as Docker container
-```
-docker build -t <image-name> <path-do-dockerfile-parent-folder>
-docker run --rm -d --network host --name <container-id> <image-name>
-```
-Read app log in docker container
-```
-docker exec -it <container-name> tail -f /workspace/iot-container.log
+uv run iotsim/main.py --config <path-to-config.json> #if no argument is set the app will make use of the default config-default.json
 ```
 
 ## Implement your own IoT Units
