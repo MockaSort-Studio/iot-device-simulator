@@ -1,0 +1,18 @@
+[run]
+# Only measure code inside the iotsim folder
+source = iotsim
+omit =
+    # Completely ignore these files in the percentage calculation
+    iotsim/**/__init__.py
+    iotsim/main.py
+    iotsim/examples/*
+
+[report]
+# Do not count these specific lines as "missing"
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    @abstractmethod
+    # Exclude the "..." or "pass" inside abstract methods
+    \.\.\.
+    pass

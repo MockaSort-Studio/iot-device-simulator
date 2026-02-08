@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import argparse
-import os
 import time
 
-import core.iotcontainer as iot
+import iotsim.core.iotcontainer as iot
 
 
 def parse_arguments() -> str:
@@ -13,14 +12,10 @@ def parse_arguments() -> str:
         "--config",
         help="Absolute path to <config>.json",
         action="store",
-        default=os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + "/config")
-        + "/config-default.json",
+        default="",
     )
     args = parser.parse_args()
-    if not args.config:
-        raise iot.ProgramKilled
-    else:
-        return args.config
+    return args.config
 
 
 def main() -> None:

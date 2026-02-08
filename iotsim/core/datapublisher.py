@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import orjson as json
-from config.types import PublisherModel
-from core.networkclients import NetworkInterface
-from core.stateregistry import StateRegistry
+
+from iotsim.config.types import PublisherModel
+from iotsim.core.networkclients import NetworkInterface
+from iotsim.core.stateregistry import StateRegistry
 
 
 class DataPublisher:

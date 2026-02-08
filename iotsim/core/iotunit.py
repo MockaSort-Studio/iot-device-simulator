@@ -4,11 +4,12 @@ import logging
 from typing import Dict
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from config.types import PublisherModel, SubscriberModel, UnitModel
-from core.datapublisher import DataPublisher
-from core.datasubscriber import DataSubscriber
-from core.networkclients import NetworkInterface
-from core.stateregistry import StateRegistry
+
+from iotsim.config.types import PublisherModel, SubscriberModel, UnitModel
+from iotsim.core.datapublisher import DataPublisher
+from iotsim.core.datasubscriber import DataSubscriber
+from iotsim.core.networkclients import NetworkInterface
+from iotsim.core.stateregistry import StateRegistry
 
 
 class IOTUnit:

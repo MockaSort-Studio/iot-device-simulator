@@ -1,9 +1,11 @@
 [project]
-authors = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
-maintainers = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
-name = "iot-device-simulator"
+name = "iotsim"
 version = "1.0.0"
+description = "IoT Device Simulator for developing and testing downstream logic relying on IoT physical devices"
+authors = [{ name = "Michelangelo Setaro", email = "mksetaro@gmail.com" }]
 requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "GPL3" }
 dependencies = [
     "paho-mqtt>=2.1.0",
     "apscheduler>=3.11.2",
@@ -12,10 +14,28 @@ dependencies = [
 ]
 
 [project.scripts]
-iotsim = "iotsim:main"
+iotsim = "iotsim.main:main"
 
 [dependency-groups]
-dev = ["ruff>=0.14.13"]
+dev = ["pytest>=9.0.2", "pytest-cov>=4.1.0", "ruff>=0.14.13"]
 
-[tool.uv.sources]
-iotsim = { path = "./iotsim" }
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["iotsim"]
+
+[tool.hatch.build]
+include = ["iotsim/**/*.py", "iotsim/**/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "*_test.py"
+python_functions = "test_*"
+python_classes = "Test*"
+addopts = [
+    "--import-mode=importlib",
+    # "--cov=iotsim",
+    # "--cov-report=term-missing",
+]

@@ -6,7 +6,8 @@ from enum import Enum
 from typing import Any, Callable, Optional
 
 import paho.mqtt.client as mqtt
-from config.types import ClientConfig
+
+from iotsim.config.types import ClientConfig
 
 
 class NetworkInterface(ABC):

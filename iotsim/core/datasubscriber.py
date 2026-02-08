@@ -1,8 +1,8 @@
 import logging
 
-from config.types import SubscriberModel
-from core.networkclients import NetworkInterface
-from core.stateregistry import StateRegistry
+from iotsim.config.types import SubscriberModel
+from iotsim.core.networkclients import NetworkInterface
+from iotsim.core.stateregistry import StateRegistry
 
 
 class DataSubscriber:

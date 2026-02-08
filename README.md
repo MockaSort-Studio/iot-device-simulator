@@ -5,41 +5,42 @@ Python IoT device simulator consisting of an IoT Container running units represe
 
 ## Usage guide - Run examples
 
-Install Python package in virtualenv
+If you don't know what's uv -> [astral-uv](https://docs.astral.sh/uv)
+
+Open folder in devcontainer, then you should be good to go
+
 ```
-python3 -m venv venv
-source venv/bin/activate
-pip install -e <path-to-project-root>
-python <path-to-iotsim>/config/generate_py_parameters.py #generate parameters code
+uv sync (optional)
 ```
 
 create json config, use [config-default.json](iotsim/config/config-default.json) as template
 ```
 {
     "logger": {
-        "file_path": "iot-container.log",
+        "file_path": "/workspaces/iot-device-simulator/iotsim.log",
         "verbosity": "DEBUG"
     },
     "client": {
-        "id": "test_client",
-        "type": "mqtt", #mqtt only client supported atm
+        "name": "test_client",
+        "type": "mqtt",
         "host": "localhost",
         "port": 1883,
-        "root_ca": "",
-        "client_certificate": "",
-        "client_key": ""
+        "root_ca_path": "",
+        "client_certificate_path": "",
+        "client_key_path": ""
     },
-    "pods": {
-        "pods_list_file_path": "<path-to-pods-list.json>",
-        "pods_py_module_path": "<path-to-pods-py-modules>"
+    "units": {
+        "units_list_file_path": "/workspaces/iot-device-simulator/examples/iotunits.json",
+        "units_py_module_path": "/workspaces/iot-device-simulator/examples/"
     }
 }
+
 ```
 
 
 Run simulator
 ```
-python <path-to-project-root>/iotsim/src/app.py --config <path-to-config.json>
+uv run iotsim/main.py --config <path-to-config.json>
 ```
 if no argument are set the app will make use of the default config-default.json
 
@@ -73,90 +74,61 @@ The Units make use of user defined registers (simulating the volatile memory of 
 Unit package structure
 
 ```
-|-- user-define-unit/
+|-- user-defined-unit/
     |-- __init__.py
     |-- control-loop-module.py
-    |-- request-module.py
 
 ```
 Control loop function must have the signature below:
 ```
-        IoT Unit registers
+        iotsim.core.stateregistry.StateRegistry
             |
 def run(registers,):
     #TODO Implement your logic
-    #registers['key'] = some-value     
+    #registers.update('key', some-value)
+    #registers.get_value('key')
 ```
 ##### Publishers
 
-Publishers are mapped to a register key and publish the value corresponding to the key.
-Two different kind of publishers are available. An IoT unit can have any number of publishers
-
-```
-NOTIFICATION #Triggered by some event and publishing a register value (see smart_elevator example)
-PERIODIC #Publisher periodically publishing a register value (see temperature_sensor example)
-```
+Publishers are mapped to a register key and publish, with a given frequency, the value corresponding to the key.
 
 Json definition
 ```
 {
     "id": "publisher-id",
-    "type": "publisher-type",
-    "cycle_time_ms": cycle-time,  #used only by periodic publishers
+    "publish_frequency_ms",       #publish frequency in ms
     "read": "register-key",       #register key accessed by publisher
-    "topic": "mqtt-topic"
+    "topic": "mqtt-topic"         #mqtt-topic of the subscription
 }
 ```
 ##### Subscribers
 
-Subscribers are triggered by a message received on their mqtt-topic and have two-fold usage: write some data received on topic to the register value they're mapped to or trigger a function in a RPC fashion and then notify the results through a NOTIFICATION publisher
-
-```
-DATA_WRITE #Used to update the register value they're mapped to(see temperature_sensor example)
-REQUEST #Triggers a function and then notifies results through notification publisher (see smart_elevator example)
-```
+Subscribers are triggered by a message received on their mqtt-topic and write some data received on topic to the register value they're mapped to
 
 Json definition
 ```
 {
     "id": "subscriber-id",
-    "type": "subscriber-type",
-    "request_module": "user-define-unit.request-module",    #works like the control loop, declare key-value only for REQUEST subscribers
-    "write": "register-key",                                #register key accessed by subscriber when writing data, declare key-value only for DATA_WRITE subscribers
-    "notifier": "notifier-publisher-id",                    #publisher id to be used by REQUEST subscriber to notify request results, declare key-value only for REQUEST subscribers
-    "topic": "unit/robot_request"                           #mqtt-topic of the subscription
+    "write": "register-key",         #register key accessed by subscriber
+    "topic": "unit/robot_request"    #mqtt-topic of the subscription
 }
 ```
-Request function for **REQUEST** subscribers must have the following signature
-```                    
-                #IoT Unit registers
-                        |         #payload from mqtt topic  
-                        |         |         #trigger func for notifier pub 
-                        |         |         |
-def process_request(registers, payload, notify_func):
-    #TODO implementation goes here
-    #do something
-    #notify_func()
-```
-
 
 ## TODO LIST
 
-- [ ] Code clean up
-- [ ] Unit testing
+- [x] Code clean up
+- [x] Unit testing
 - [ ] Improve documentation
-- [ ] Improve overall abstraction
-- [ ] Improve Python packaging
-- [ ] Refactor project as an IoT Container usable also with physical devices
-- [ ] Refactor project in order to make use of an arbitrary communication protocol 
+- [x] Improve overall abstraction
+- [x] Improve Python packaging
+- [ ] Refactor project in order to make use of an arbitrary communication protocol
 
 ## Contributors
 
-* [Michelangelo Setaro](https://github.com/mksetaro) 
-  
+* [Michelangelo Setaro](https://github.com/mksetaro)
+
 ## Contribution
 
-If you wish to contribute contact:
-
-* Automata Community - automata.community@gmail.com
-* Michelangelo Setaro - mksetaro@gmail.com
+If you wish to contribute get in touch with **MockaSort-Studio**
+  * mockasortstudio@gmail.com
+  * [MockaSort Studio - Discord](https://discord.gg/z2DAWmcy)
