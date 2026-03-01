@@ -139,4 +139,4 @@ Json definition
 
 If you wish to contribute get in touch with **MockaSort-Studio**
   * mockasortstudio@gmail.com
-  * [MockaSort Studio - Discord](https://discord.gg/z2DAWmcy)
+  * [MockaSort Studio - Matrix voice](https://matrix.to/#/!bFKYlzPczaLALdSnnb:matrix.org?via=matrix.org)
